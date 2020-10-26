@@ -5,9 +5,9 @@ import (
 )
 
 func UserRoute(s Service) *chi.Mux {
-	r := chi.NewRouter()
+	router := chi.NewRouter()
 
-	r.Get("/getUser", getHandler(s))
-	r.Post("/updateUser", postHandler)
-	return r
+	router.Get("/getUser", getHandler(s))
+	router.Post("/updateUser", postHandler)
+	return router
 }
