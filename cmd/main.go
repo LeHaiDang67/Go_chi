@@ -1,10 +1,14 @@
 package main
 
 import (
-	"go_chi/pkg/Router"
+	"go_chi/cmd/server"
+	"go_chi/internal/db"
 )
 
 func main() {
-	Router.StartServer()
+	db := db.InitDatabase()
+	defer db.Close()
 
+	// Start server
+	server.Start(db)
 }
