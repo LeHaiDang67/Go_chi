@@ -5,8 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+
+	_ "github.com/jackc/pgx"
+	_ "github.com/lib/pq"
 )
 
+//InitDatabase is....
 func InitDatabase() *sql.DB {
 	db, err := getDatabase()
 	if err != nil {
