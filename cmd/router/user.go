@@ -27,14 +27,18 @@ func getUser(db *sql.DB) http.HandlerFunc {
 func postUser(db *sql.DB) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var requestUser user.User
-
-		user, errReq := user.AddUser(db, requestUser)
+		err := json.NewDecoder(r.Body).Decode(&requestUser)
+		if err != nil {
+			http.Error(w, err.Error(), 400)
+			return
+		}
+		_, errReq := user.AddUser(db, requestUser)
 		if errReq != nil {
 			json.NewEncoder(w).Encode("Cannot insert user")
 			return
 		}
 
-		json.NewEncoder(w).Encode(user)
+		//json.NewEncoder(w).Encode(user)
 	})
 }
 
@@ -53,3 +57,10 @@ func deleteUser(db *sql.DB) http.HandlerFunc {
 
 	})
 }
+
+// func updateUser(db *sql.DB) http.HandlerFunc {
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//         var resq
+// 	})
+
+// }
