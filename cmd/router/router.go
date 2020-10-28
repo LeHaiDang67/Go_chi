@@ -25,6 +25,7 @@ func Handler(db *sql.DB) http.Handler {
 	r.Route("/user", func(userRouter chi.Router) {
 		userRouter.Get("/", getUser(db))
 		userRouter.Post("/", addUser(db))
+		userRouter.Put("/", updateUser(db))
 		userRouter.Delete("/", deleteUser(db))
 	})
 

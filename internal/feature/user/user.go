@@ -2,7 +2,6 @@ package user
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 )
 
@@ -33,19 +32,15 @@ func GetUser(db *sql.DB, id int) (User, error) {
 }
 
 //AddUser insert new user
-func AddUser(db *sql.DB, user User) (*User, error) {
+func AddUser(db *sql.DB, user *User) error {
 
-	stmt, err := db.Prepare("INSERT INTO users (address, birthday, name) VALUES ($1 , $2, $3) ")
+	result, err := db.Exec("INSERT INTO users (address, birthday, name) VALUES ($1 , $2, $3)", user.Address, user.Birthday, user.Name)
 	if err != nil {
 
-		return &user, err
+		return err
 	}
-	res, err := stmt.Exec(&user.Address, &user.Birthday, &user.Name)
-	if err != nil {
-		return &user, err
-	}
-	fmt.Print(res)
-	return &user, nil
+	result.RowsAffected()
+	return nil
 }
 
 //DeleteUser delete user
@@ -60,25 +55,12 @@ func DeleteUser(db *sql.DB, id int) error {
 }
 
 //UpdateUser edit user
-func UpdateUser(db *sql.DB, user User) (User, error) {
-	stmt, err := db.Prepare("UPDATE users SET address = ?  where id = ?")
+func UpdateUser(db *sql.DB, user *User, id int) error {
+	result, err := db.Exec("UPDATE users SET address = $1, birthday=$2, name = $3  where id = $4", user.Address, user.Birthday, user.Name, id)
+
 	if err != nil {
-		return user, err
+		return err
 	}
-	res, err := stmt.Exec(&user.Address, &user.ID)
-	if err != nil {
-		return user, err
-	}
-	fmt.Print(res)
-	return user, nil
+	result.RowsAffected()
+	return nil
 }
-
-// func AddUser(db *sql.DB, user User) (User, error) {
-
-// 	err := db.QueryRow("INSERT INTO users (address, birthday, name) VALUES ($1 , $2, $3) ", user.Address, user.Birthday, user.Name).Scan(&user.ID)
-// 	if err != nil {
-
-// 		return user, err
-// 	}
-// 	return user, nil
-// }
