@@ -7,10 +7,10 @@ import (
 
 // User is an object representing the user.
 type User struct {
-	ID       string    `json:"id"`
-	Address  string    `json:"address"`
-	Birthday time.Time `json:"birthday"`
-	Name     string    `json:"name"`
+	ID       string `json:"id"`
+	Address  string `json:"address"`
+	Birthday string `json:"birthday"`
+	Name     string `json:"name"`
 }
 
 // GetUser get a user, return error if fail
@@ -33,8 +33,9 @@ func GetUser(db *sql.DB, id int) (User, error) {
 
 //AddUser insert new user
 func AddUser(db *sql.DB, user *User) error {
-
-	result, err := db.Exec("INSERT INTO users (address, birthday, name) VALUES ($1 , $2, $3)", user.Address, user.Birthday, user.Name)
+	layout := "2006-01-02"
+	t, _ := time.Parse(layout, user.Birthday)
+	result, err := db.Exec("INSERT INTO users (address, birthday, name) VALUES ($1 , $2, $3)", user.Address, t.Format("2006-01-02T15:04:05-0700"), user.Name)
 	if err != nil {
 
 		return err
@@ -56,7 +57,9 @@ func DeleteUser(db *sql.DB, id int) error {
 
 //UpdateUser edit user
 func UpdateUser(db *sql.DB, user *User, id int) error {
-	result, err := db.Exec("UPDATE users SET address = $1, birthday=$2, name = $3  where id = $4", user.Address, user.Birthday, user.Name, id)
+	layout := "2006-01-02"
+	t, _ := time.Parse(layout, user.Birthday)
+	result, err := db.Exec("UPDATE users SET address = $1, birthday=$2, name = $3  where id = $4", user.Address, t.Format("2006-01-02T15:04:05-0700"), user.Name, id)
 
 	if err != nil {
 		return err
