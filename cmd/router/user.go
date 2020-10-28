@@ -24,7 +24,7 @@ func getUser(db *sql.DB) http.HandlerFunc {
 	})
 }
 
-func postUser(db *sql.DB) http.HandlerFunc {
+func addUser(db *sql.DB) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var requestUser user.User
 		err := json.NewDecoder(r.Body).Decode(&requestUser)
