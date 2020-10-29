@@ -7,7 +7,7 @@ import (
 
 // User is an object representing the user.
 type User struct {
-	ID       string `json:"id"`
+	ID       int    `json:"id"`
 	Address  string `json:"address"`
 	Birthday string `json:"birthday"`
 	Name     string `json:"name"`
