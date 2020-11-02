@@ -12,6 +12,8 @@ func getUser(db *sql.DB) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(r.FormValue("id"))
 		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("HTTP status code returned!"))
 			json.NewEncoder(w).Encode("Missing id parameter")
 			return
 		}
@@ -21,18 +23,29 @@ func getUser(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		json.NewEncoder(w).Encode(user)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("HTTP status code returned!"))
 	})
 }
 
 func addUser(db *sql.DB) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var requestUser user.User
-		json.NewDecoder(r.Body).Decode(&requestUser)
+		err := json.NewDecoder(r.Body).Decode(&requestUser)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("HTTP status code returned!"))
+			return
+		}
 		errReq := user.AddUser(db, &requestUser)
 		if errReq != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("HTTP status code returned!"))
 			json.NewEncoder(w).Encode("Cannot insert user")
 			return
 		}
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("HTTP status code returned!"))
 
 	})
 }
@@ -41,15 +54,21 @@ func deleteUser(db *sql.DB) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(r.FormValue("id"))
 		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("HTTP status code returned!"))
 			json.NewEncoder(w).Encode("Missing id parameter")
+
 			return
 		}
 		errReq := user.DeleteUser(db, id)
 		if errReq != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("HTTP status code returned!"))
 			json.NewEncoder(w).Encode("Cannot delete user")
 			return
 		}
-
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("HTTP status code returned!"))
 	})
 }
 
@@ -57,15 +76,28 @@ func updateUser(db *sql.DB) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(r.FormValue("id"))
 		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("HTTP status code returned!"))
 			json.NewEncoder(w).Encode("Missing id parameter")
 			return
 		}
+
 		var requestUser user.User
-		json.NewDecoder(r.Body).Decode(&requestUser)
+		errs := json.NewDecoder(r.Body).Decode(&requestUser)
+		if errs != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("HTTP status code returned!"))
+			return
+		}
+
 		errRep := user.UpdateUser(db, &requestUser, id)
 		if errRep != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("HTTP status code returned!"))
 			json.NewEncoder(w).Encode("Cannot update user")
 			return
 		}
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("HTTP status code returned!"))
 	})
 }

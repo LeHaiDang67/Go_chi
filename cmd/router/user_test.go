@@ -2,6 +2,7 @@ package router
 
 import (
 	"go_chi/internal/db"
+	"go_chi/internal/feature/user"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -31,4 +32,32 @@ func TestGetUserByID(t *testing.T) {
 		t.Errorf("handler returned unexpected body: got %v want %v", rr.Body.String(), expected)
 	}
 
+}
+
+func TestGetUser(t *testing.T) {
+	testCases := []struct {
+		desc           string
+		givenUserID    string
+		expectedResult interface{}
+	}{
+		{
+			desc:        "Successfully",
+			givenUserID: "1",
+			expectedResult: user.User{
+				ID:       1,
+				Address:  "HCM",
+				Birthday: "2000-11-11T00:00:00Z",
+				Name:     "Teo",
+			},
+		},
+	}
+
+	for _, i := range testCases {
+		db := db.InitDatabase()
+		defer db.Close()
+		// TODO
+		t.Run(i.desc, func(t *testing.T) {
+
+		})
+	}
 }
